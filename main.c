@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct data {
   char letter;
@@ -7,13 +8,15 @@ typedef struct data {
 } data;
 
 data *readData(char *fileName);
+char *encodeLetter(char letter, data *table);
+char decodeLetter(char *morse, data *table);
 
 int main(void) {
-  printf("hello, world\n");
   data *codes = readData("codes.csv");
-  for (int i = 0; codes[i].letter != '\0'; i++) {
-    printf("%c: %s\n", codes[i].letter, codes[i].morse);
-  }
+  char *morse = encodeLetter('s', codes);
+  printf("morse: %s\n", morse);
+  char letter = decodeLetter(morse, codes);
+  printf("letter: %c\n", letter);
   free(codes);
   codes = NULL;
   return 0;
@@ -40,4 +43,22 @@ data *readData(char *fileName) {
     i++;
   }
   return codes;
+}
+
+char *encodeLetter(char letter, data *table) {
+  for (size_t i = 0; i < 26; i++) {
+    if (letter == table[i].letter) {
+      return table[i].morse;
+    }
+  }
+  return NULL;
+}
+
+char decodeLetter(char *morse, data *table) {
+  for (size_t i = 0; i < 26; i++) {
+    if (strcmp(morse, table[i].morse) == 0) {
+      return table[i].letter;
+    }
+  }
+  return NULL;
 }
